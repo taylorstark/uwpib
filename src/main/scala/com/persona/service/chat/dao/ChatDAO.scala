@@ -30,13 +30,7 @@ class MsgHistoryTable(tag: Tag) extends Table[MsgHistory](tag, "msg_history") {
 
 }
 
-object ChatDAO extends TableQuery(new MsgHistoryTable((_))) {
-
-  var instance: Option[Database] = None;
-
-  def initDatabase(db: Database): Unit = {
-    instance = Some(db)
-  }
+class ChatDAO(db: Database) {
 
   private[this] val msgHistory = TableQuery[MsgHistoryTable]
 
@@ -44,12 +38,12 @@ object ChatDAO extends TableQuery(new MsgHistoryTable((_))) {
     val query = msgHistory.filter(
       row => row.offerId === offerId && row.userId === userid
     ).map(row => (row.userId, row.sender, row.message)).result
-    instance.get.run(query)
+    db.run(query)
   }
 
   def storeMsg(offerId: UUID, userid: String, message: ChatMessage): Unit = {
     val query = msgHistory += MsgHistory(0, offerId, userid, 1, message.user, message.msg)
-    instance.get.run(query)
+    db.run(query)
   }
 
 }

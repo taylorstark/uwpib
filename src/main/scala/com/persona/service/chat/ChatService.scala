@@ -6,8 +6,11 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.stream.Materializer
+import com.persona.service.chat.dao.ChatDAO
 
-class ChatService(implicit actorSystem: ActorSystem, materializer: Materializer) {
+class ChatService(dataAccess: ChatDAO)(implicit actorSystem: ActorSystem, materializer: Materializer) {
+
+  implicit val chatDAO = dataAccess
 
   def chat(offerId: UUID, user: String) = {
     ChatRooms.find(offerId) match {
@@ -18,14 +21,6 @@ class ChatService(implicit actorSystem: ActorSystem, materializer: Materializer)
 
   def createRoom(offerId: UUID): Unit = {
     ChatRooms.createRoom(offerId)
-  }
-
-}
-
-object ChatService {
-
-  def apply()(implicit actorSystem: ActorSystem, materializer: Materializer) = {
-    new ChatService
   }
 
 }

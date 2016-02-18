@@ -13,12 +13,15 @@ CREATE TABLE passwords
     password TEXT NOT NULL
 );
 
+<<<<<<< Updated upstream
 CREATE TABLE google_accounts
 (
     id SERIAL PRIMARY KEY REFERENCES accounts,
     google_id TEXT UNIQUE
 );
 
+=======
+>>>>>>> Stashed changes
 CREATE TABLE msg_history
 (
     msg_id SERIAL,
@@ -28,4 +31,8 @@ CREATE TABLE msg_history
     sender TEXT NOT NULL,
     message TEXT
 );
+<<<<<<< Updated upstream
 CREATE INDEX idx_msghistory ON msg_history (offerid, userid);
+=======
+CREATE INDEX idx_msghistory ON msg_history (offerid, userid);
+>>>>>>> Stashed changes

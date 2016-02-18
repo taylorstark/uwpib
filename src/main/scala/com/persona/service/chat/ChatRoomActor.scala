@@ -3,13 +3,14 @@ package com.persona.service.chat
 import java.util.UUID
 
 import akka.actor.{Props, ActorRef, Actor}
+import com.persona.service.chat.dao.ChatDAO
 
-class ChatRoomActor(offerId: UUID) extends Actor {
+class ChatRoomActor(offerId: UUID, chatDAO: ChatDAO) extends Actor {
 
   var participants = Map.empty[String, ActorRef]
   var supports = Map.empty[String, ActorRef]
 
-  val dbWorker = context.actorOf(Props[ChatStorageActor])
+  val dbWorker = context.actorOf(Props(classOf[ChatStorageActor], chatDAO))
 
   override def receive = {
     case Connect(user, ref) =>
@@ -44,7 +45,6 @@ class ChatRoomActor(offerId: UUID) extends Actor {
       dbWorker ! PersistMsg(offerId, msg.user, msg)
 
     case msg: HistoryMessage =>
-      printf("History: User: %s, Msg: %s\n", msg.user, msg.msg)
       participants.get(msg.user).get ! msg.msg
   }
 

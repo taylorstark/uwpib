@@ -11,12 +11,12 @@ sealed trait DBEvent
 case class FetchHistory(offerId: UUID, userid: String) extends DBEvent
 case class PersistMsg(offerId: UUID, userid: String, msg: ChatMessage) extends DBEvent
 
-class ChatStorageActor extends Actor {
+class ChatStorageActor(chatDAO: ChatDAO) extends Actor {
 
   override def receive = {
     case evt: FetchHistory =>
       val roomActor = sender()
-      ChatDAO.fetchMsgHistory(evt.offerId, evt.userid)
+      chatDAO.fetchMsgHistory(evt.offerId, evt.userid)
         .onSuccess {
           case msgs => {
             for (msg <- msgs) {
@@ -27,7 +27,7 @@ class ChatStorageActor extends Actor {
 
 
     case evt: PersistMsg =>
-      ChatDAO.storeMsg(evt.offerId, evt.userid, evt.msg)
+      chatDAO.storeMsg(evt.offerId, evt.userid, evt.msg)
   }
 
 }
