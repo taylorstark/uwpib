@@ -16,9 +16,9 @@ class ChatRoomActor(offerId: UUID) extends Actor {
       userType(user) match {
         case UserType.Consumer =>
           participants += user -> ref
-          supports.values.foreach(_ ! ChatMessage(user, " Joined"))
+          supports.values.foreach(_ ! ChatMessage(user, "Joined"))
           dbWorker ! FetchHistory(offerId, user)
-          dbWorker ! PersistMsg(offerId, user, ChatMessage(user, " Joined"))
+          dbWorker ! PersistMsg(offerId, user, ChatMessage(user, "Joined"))
 
         case UserType.Partner =>
           supports += user -> ref
@@ -33,8 +33,8 @@ class ChatRoomActor(offerId: UUID) extends Actor {
       }
 
     case ack: AckMessage =>
-      dbWorker ! PersistMsg(offerId, ack.user, ChatMessage(ack.user, " Seen"))
-      supports.values.foreach(_ ! ChatMessage(ack.user, " Seen"));
+      dbWorker ! PersistMsg(offerId, ack.user, ChatMessage(ack.user, "Seen"))
+      supports.values.foreach(_ ! ChatMessage(ack.user, "Seen"));
 
     case msg: ChatMessage =>
       if(userType(msg.user) == UserType.Partner) {
