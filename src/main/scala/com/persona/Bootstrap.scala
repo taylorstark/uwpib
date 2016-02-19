@@ -18,6 +18,7 @@ import com.persona.service.authentication.google.GoogleTokenValidationService
 import com.persona.service.authorization.AuthorizationService
 import com.persona.service.bank.{BankService, CassandraBankDAO, DataItemValidator, JsonDataSchemaLoader}
 import com.persona.service.chat.ChatService
+import com.persona.service.chat.dao.ChatDAO
 import com.persona.service.offer.{CassandraOfferDAO, OfferService}
 import com.typesafe.config.Config
 import slick.jdbc.JdbcBackend._
@@ -61,7 +62,8 @@ class Bootstrap
   private[this] val offerService = OfferService(offerDAO)
   private[this] val offerApi = new OfferApi(offerService)
 
-  private[this] val chatService = new ChatService
+  private[this] val chatDAO = new ChatDAO(db)
+  private[this] val chatService = new ChatService(chatDAO)
   private[this] val chatApi = new ChatApi(chatService)
 
   val routes = {
